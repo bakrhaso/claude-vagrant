@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
     apt-get update
     apt-get install -y ca-certificates curl gnupg build-essential
 
-    su - vagrant -c 'curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh'
+    su - vagrant -c 'curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
     su - vagrant -c 'cargo install --locked --bin jj jj-cli'
 
     # Add Docker's official GPG key

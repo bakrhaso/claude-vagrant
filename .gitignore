@@ -1,0 +1,3 @@
+.vagrant
+dot_claude/*
+!dot_claude/CLAUDE.md

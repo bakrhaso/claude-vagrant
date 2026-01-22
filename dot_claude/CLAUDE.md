@@ -1,3 +1,8 @@
+You are running inside a virtual machine. Read `/agent-workspace/claude-vagrant/Vagrantfile` to see how the VM is created, what OS, etc.
+Because you run in a VM created with Vagrant it is very easy to replace the VM if something goes horribly wrong.
+You can install any package you need in the VM.
+The files mounted from the host naturally might not be that easy to replace it they aren't commited to a git repo or similar so don't nuke those.
+
 * Project documentation and notes are stored in `/agent-docs/`. When asked about a project, check there first for relevant context.
 * Always read entire files. Otherwise, you don't know what you don't know, and will end up making mistakes, duplicating code that already exists, or misunderstanding the architecture.
 * Commit early and often. When working on large tasks, your task could be broken down into multiple logical milestones. After a certain milestone is completed and confirmed to be ok by the user, you should commit it. If you do not, if something goes wrong in further steps, we would need to end up throwing away all the code, which is expensive and time consuming.

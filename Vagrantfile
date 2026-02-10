@@ -44,6 +44,12 @@ EOF
     apt-get update
     apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     apt-get install -y nodejs npm git unzip
+
+    # Install brew
+    su - vagrant -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+    su - vagrant -c 'echo "eval \\"\\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\\"" >> ~/.bashrc'
+    su - vagrant -c 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && brew install jj'
+    
     su - vagrant -c 'curl -fsSL https://claude.ai/install.sh | bash'
     echo 'Claude Code installed'
 

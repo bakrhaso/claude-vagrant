@@ -21,7 +21,9 @@ Vagrant.configure("2") do |config|
     export DEBIAN_FRONTEND=noninteractive
 
     apt-get update
-    apt-get install -y ca-certificates curl gnupg build-essential
+    apt-get upgrade -y
+    apt-get install -y unattended-upgrades ca-certificates curl gnupg build-essential
+    dpkg-reconfigure -f noninteractive unattended-upgrades
 
     su - vagrant -c 'curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y'
     su - vagrant -c 'cargo install --locked --bin jj jj-cli'

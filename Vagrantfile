@@ -54,8 +54,6 @@ EOF
     echo 'Claude Code installed'
 
     usermod -aG docker vagrant
-    chown -R vagrant:vagrant /agent-workspace
-    
     echo 'Finished provisioner shell script'
   SHELL
 end

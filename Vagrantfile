@@ -6,7 +6,6 @@ Vagrant.configure("2") do |config|
   #config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
   config.vm.synced_folder "~/code", "/agent-workspace", type: "virtualbox"
   config.vm.synced_folder "~/Documents/claude-projects/", "/agent-docs", type: "virtualbox"
-  config.vm.synced_folder "./dot_claude", "/home/vagrant/.claude/", type: "virtualbox"
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "4096"
@@ -16,6 +15,11 @@ Vagrant.configure("2") do |config|
     vb.customize ["modifyvm", :id, "--audio", "none"]
     vb.customize ["modifyvm", :id, "--usb", "off"]
   end
+
+  # Stage to /tmp first — file provisioner runs as vagrant, can't write to /etc/ or dirs that don't exist yet.
+  # The shell provisioner below moves them into place.
+  config.vm.provision "file", source: "~/.claude/CLAUDE.md", destination: "/tmp/host-claude-md"
+  config.vm.provision "file", source: "./dot_claude/CLAUDE.md", destination: "/tmp/vm-claude-md"
 
   config.vm.provision "shell", inline: <<-SHELL
     export DEBIAN_FRONTEND=noninteractive
@@ -48,8 +52,20 @@ EOF
     # Install brew
     su - vagrant -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
     su - vagrant -c 'echo "eval \\"\\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\\"" >> ~/.bashrc'
-    su - vagrant -c 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && brew install jj'
-    
+    su - vagrant -c 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && brew install jj gh'
+
+    # Copy CLAUDE.md files into the VM
+    mkdir -p /etc/host-claude-config
+    if [ -f /tmp/host-claude-md ]; then
+      mv /tmp/host-claude-md /etc/host-claude-config/CLAUDE.md
+    fi
+
+    mkdir -p /home/vagrant/.claude
+    if [ -f /tmp/vm-claude-md ]; then
+      mv /tmp/vm-claude-md /home/vagrant/.claude/CLAUDE.md
+    fi
+    chown -R vagrant:vagrant /home/vagrant/.claude
+
     su - vagrant -c 'curl -fsSL https://claude.ai/install.sh | bash'
     echo 'Claude Code installed'
 

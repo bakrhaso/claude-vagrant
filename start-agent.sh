@@ -34,8 +34,8 @@ fi
 # Returns the GitHub PAT, or empty string if unavailable.
 # Extend this function to support other secret managers.
 get_pat() {
-  if command -v op &>/dev/null; then
-    op read "op://Private/claude-vagrant-pat/credential" 2>/dev/null || true
+  if [ -n "${OP_PAT_REF:-}" ] && command -v op &>/dev/null; then
+    op read "$OP_PAT_REF" 2>/dev/null || true
   fi
 }
 

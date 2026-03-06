@@ -61,7 +61,7 @@ EOF
     # Install brew
     su - vagrant -c 'NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
     su - vagrant -c 'echo "eval \\"\\$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)\\"" >> ~/.bashrc'
-    su - vagrant -c 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && brew install jj gh'
+    su - vagrant -c 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" && brew install jj gh typescript-language-server'
 
     # Copy CLAUDE.md files into the VM
     mkdir -p /etc/host-claude-config
@@ -74,6 +74,9 @@ EOF
       mv /tmp/vm-claude-md /home/vagrant/.claude/CLAUDE.md
     fi
     chown -R vagrant:vagrant /home/vagrant/.claude
+
+    # Enable Claude Code's LSP tool
+    echo 'export ENABLE_LSP_TOOL=1' >> /home/vagrant/.bashrc
 
     su - vagrant -c 'curl -fsSL https://claude.ai/install.sh | bash'
     echo 'Claude Code installed'

@@ -17,14 +17,14 @@ Docker is installed inside the VM because Docker-in-Docker (dind) requires super
 | Access browser data, keychains | Yes | No |
 | Install rootkits, modify crontabs | On host | In guest only, cleared on destroy |
 | Resource exhaustion (fork bombs) | Affects host | Contained to VM resource limits (see Vagrantfile) |
-| Access ~/code files | Yes | Yes — mounted read/write |
+| Access code directory files | Yes | Yes — mounted read/write |
 | Network exfiltration | Yes | Yes — no egress restrictions |
 
 ## What the VM does NOT protect
 
 ### Shared folders
 
-`~/code` is mounted read/write at `/agent-workspace`. This means any process in the VM can read, modify, or delete files across **all** projects under `~/code` — not just the one being worked on. This includes:
+Your code directory (configured in `config`) is mounted read/write at `/agent-workspace`. This means any process in the VM can read, modify, or delete files across **all** projects under that directory — not just the one being worked on. This includes:
 
 - Source code in unrelated projects
 - `.env` files, API keys, or credentials stored in project directories
@@ -34,11 +34,11 @@ Docker is installed inside the VM because Docker-in-Docker (dind) requires super
 - `.gitattributes` filter definitions that execute commands during `git checkout` or `git diff`
 - Git submodule definitions (`.gitmodules`) that could be pointed at malicious repositories
 
-`~/Documents/claude-projects/` is also mounted read/write. Any documents stored there are fully accessible.
+Your docs directory (configured in `config`) is also mounted read/write. Any documents stored there are fully accessible.
 
 ### Network access
 
-The VM has unrestricted outbound internet access (VirtualBox NAT mode). Combined with read access to all of `~/code`, this means data exfiltration is possible — a process could read files from shared folders and send them anywhere via `curl`.
+The VM has unrestricted outbound internet access (VirtualBox NAT mode). Combined with read access to the mounted code directory, this means data exfiltration is possible — a process could read files from shared folders and send them anywhere via `curl`.
 
 ### Prompt injection
 
@@ -112,5 +112,5 @@ These are configured on the GitHub side, independent of this VM setup:
 These are known improvements we haven't implemented:
 
 - **Egress network filtering:** iptables rules in the VM that allowlist only known-good destinations (GitHub API, npm registry, apt mirrors, Anthropic API). This would prevent arbitrary data exfiltration.
-- **Read-only ~/code mount:** Mount `/agent-workspace` read-only and only mount the specific project directory read-write. VirtualBox shared folders can't be changed at runtime (requires `vagrant reload`), so this would mean one VM per project or a reload when switching.
+- **Read-only code mount:** Mount `/agent-workspace` read-only and only mount the specific project directory read-write. VirtualBox shared folders can't be changed at runtime (requires `vagrant reload`), so this would mean one VM per project or a reload when switching.
 - **Keep claude-vagrant outside the mounted directory:** If this repo lives under the path mounted into the VM, the agent can modify its own Vagrantfile, scripts, and instructions.

@@ -1,8 +1,5 @@
 # Directory containing your code projects — mounted read/write at /agent-workspace in the VM
-CODE_DIR=~/code/github.com/elton-mobility
+CODE_DIR=~/code
 
 # Directory for project documentation and notes — mounted read/write at /agent-docs in the VM
-DOCS_DIR=~/Documents/.claude
-
-# 1Password secret reference for the GitHub PAT (leave empty to skip)
-OP_PAT_REF=op://Private/claude-vagrant-pat/credential
+DOCS_DIR=~/Documents/claude-projects

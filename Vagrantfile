@@ -1,11 +1,20 @@
 vm_name = File.basename(Dir.getwd)
 
+# Read config file
+config_path = File.join(__dir__, 'config')
+config_vars = {}
+File.readlines(config_path).each do |line|
+  next if line.strip.empty? || line.strip.start_with?('#')
+  key, value = line.strip.split('=', 2)
+  config_vars[key] = value.gsub('~', ENV['HOME'])
+end
+
 Vagrant.configure("2") do |config|
   config.vm.box = "bento/debian-13"
 
   #config.vm.network "forwarded_port", guest: 3000, host: 3000, auto_correct: true
-  config.vm.synced_folder "~/code", "/agent-workspace", type: "virtualbox"
-  config.vm.synced_folder "~/Documents/claude-projects/", "/agent-docs", type: "virtualbox"
+  config.vm.synced_folder config_vars['CODE_DIR'], "/agent-workspace", type: "virtualbox"
+  config.vm.synced_folder config_vars['DOCS_DIR'], "/agent-docs", type: "virtualbox"
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "4096"

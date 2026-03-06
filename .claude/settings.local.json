@@ -6,7 +6,8 @@
       "WebFetch(domain:github.com)",
       "Bash(jj diff:*)",
       "Bash(jj log:*)",
-      "Bash(jj split:*)"
+      "Bash(jj split:*)",
+      "Bash(jj st:*)"
     ]
   }
 }

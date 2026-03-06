@@ -19,8 +19,8 @@ This allows easily setting up a VM that you can run `claude --dangerously-skip-p
 The idea and Vagrantfile came from [this blog post](https://blog.emilburzo.com/2026/01/running-claude-code-dangerously-safely/) from Emil Burzo, I just adapted it to my workflow.
 Changes from Emil's Vagrantfile include
 
-- Mounting `~/code` instead of `.` so I can use one VM for all my projects
-- Mounting `~/Documents/claude-projects/` since that's where I keep documents I want Claude to have access to
+- Mounting a configurable code directory (default `~/code`) at `/agent-workspace` — edit the `config` file to change it
+- Mounting a configurable docs directory (default `~/Documents/claude-projects`) at `/agent-docs`
 - Copying `dot_claude/CLAUDE.md` into the VM as Claude Code's instructions
 - Homebrew is installed
 - Installing [jj](https://docs.jj-vcs.dev) and [gh](https://cli.github.com/) via Homebrew

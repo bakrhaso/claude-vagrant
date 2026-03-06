@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Starts a Claude Code session in the VM with the GitHub PAT from 1Password.
+# Starts a Claude Code session in the VM, optionally with a GitHub PAT from 1Password.
 # Usage:
 #   ./start-agent.sh                           # land in /agent-workspace
 #   ./start-agent.sh ~/code/my-project         # land in that project's directory
@@ -31,8 +31,12 @@ if [ -n "$PROJECT_PATH" ]; then
   WORKDIR="/agent-workspace${PROJECT_PATH#$RESOLVED_CODE_DIR}"
 fi
 
+# Returns the GitHub PAT, or empty string if unavailable.
+# Extend this function to support other secret managers.
 get_pat() {
-  op read "op://Private/claude-vagrant-pat/credential"
+  if command -v op &>/dev/null; then
+    op read "op://Private/claude-vagrant-pat/credential" 2>/dev/null || true
+  fi
 }
 
 # Ensure VM is running
@@ -42,5 +46,11 @@ if [ "$VM_STATUS" != "running" ]; then
   vagrant up
 fi
 
-# SSH in with the PAT
-vagrant ssh -- -t "export GH_TOKEN='$(get_pat)' && cd '$WORKDIR' && exec bash -l"
+# Build the SSH command — inject GH_TOKEN if a PAT is available
+PAT=$(get_pat)
+SSH_CMD="cd '$WORKDIR' && exec bash -l"
+if [ -n "$PAT" ]; then
+  SSH_CMD="export GH_TOKEN='$PAT' && $SSH_CMD"
+fi
+
+vagrant ssh -- -t "$SSH_CMD"

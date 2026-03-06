@@ -2,7 +2,6 @@
 
 1. [Install VirtualBox](https://www.virtualbox.org/)
    - If on Fedora, enable RPM Fusion and follow [their guide](https://rpmfusion.org/Howto/VirtualBox), I just copy-pasted their quick install instructions and added sudo in front of every command. Afterwards I rebooted.
-
 2. [Install Vagrant](https://developer.hashicorp.com/vagrant/install)
 3. Run `vagrant up`
 4. Once done, `vagrant ssh` and you'll be inside the VM.

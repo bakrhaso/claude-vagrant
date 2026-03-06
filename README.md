@@ -29,7 +29,7 @@ Changes from Emil's Vagrantfile include
 
 # GitHub CLI (gh) setup
 
-The VM has `gh` installed but needs a token to authenticate. We use a fine-grained PAT stored in 1Password so the agent can use `gh` without full account access. This requires the host to have the 1Password CLI installed and enabled.
+The VM has `gh` installed but needs a token to authenticate. The `start-agent.sh` script can optionally pull a fine-grained PAT from 1Password via `op` and inject it into the VM session. This is entirely optional — if `op` is not installed or `OP_PAT_REF` is empty in `config`, the VM starts without `GH_TOKEN`.
 
 ## Creating the PAT
 
@@ -50,16 +50,18 @@ The VM has `gh` installed but needs a token to authenticate. We use a fine-grain
    - Leave everything else at "No access"
    - See [GitHub's docs on fine-grained PAT permissions](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens) for a full reference
 4. Generate the token. If the org requires approval, an admin will need to approve it.
-5. Store the token in 1Password as `claude-vagrant-pat`
+5. Store the token in 1Password and set `OP_PAT_REF` in `config` to the secret reference (default: `op://Private/claude-vagrant-pat/credential`)
 
-## Launching with the PAT
+## Launching
 
 ```bash
 ./start-agent.sh                            # land in /agent-workspace
 ./start-agent.sh ~/code/my-project          # land in a specific project
 ```
 
-This pulls the token from 1Password via `op` and injects it into the VM session as `GH_TOKEN`. The token only lives in the shell environment — it's never written to disk inside the VM.
+If a PAT is available (via `op`), it's injected as `GH_TOKEN` into the VM session. The token only lives in the shell environment — it's never written to disk inside the VM. Without a PAT, the session starts normally but `gh` won't be authenticated.
+
+You can also authenticate `gh` inside the VM using `gh auth login` (the regular browser/device code flow), but this is discouraged — it grants the full permissions of your GitHub account rather than the scoped-down permissions of a fine-grained PAT.
 
 **Security note:** Exposing a PAT via environment variable means any process running in the VM can read it (e.g. `printenv GH_TOKEN`). This is a known trade-off. We accept it here because:
 

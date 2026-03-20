@@ -3,14 +3,13 @@
 1. [Install VirtualBox](https://www.virtualbox.org/)
    - If on Fedora, enable RPM Fusion and follow [their guide](https://rpmfusion.org/Howto/VirtualBox), I just copy-pasted their quick install instructions and added sudo in front of every command. Afterwards I rebooted.
 2. [Install Vagrant](https://developer.hashicorp.com/vagrant/install)
-3. Run `vagrant up`
-4. Once done, `vagrant ssh` and you'll be inside the VM.
+3. `cp example-config config` and replace with your values
+4. `./start-agent.sh`, optionally `./start-agent.sh path/to/dir` if you want to start in a specific directory. The path is on the host and will be "translated" to an internal path in the VM.
 
 If you want to start fresh again
 
 1. `vagrant destroy`
-2. `vagrant up`, afther this completes you have a new VM.
-3. `vagrant ssh` to enter the VM again.
+2. `./start-agent.sh`
 
 # What
 

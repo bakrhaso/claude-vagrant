@@ -1,7 +1,6 @@
-You are running inside a virtual machine. Read `/agent-workspace/claude-vagrant/Vagrantfile` to see how the VM is created, what OS, etc.
-Because you run in a VM created with Vagrant it is very easy to replace the VM if something goes horribly wrong.
+You are running inside a virtual machine.
+It is simple to replace the VM, but files mounted from the host might not be as easy to replace.
 You can install any package you need in the VM.
-The files mounted from the host naturally might not be that easy to replace if they aren't committed to a git repo or similar so don't nuke those.
 
 * Project documentation and notes are stored in `/agent-docs/`. When asked about a project, check there first for relevant context.
 
